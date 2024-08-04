@@ -9,18 +9,43 @@ class Invoice extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'invoice_number', 'invoice_date', 'notes'];
-    protected $casts = [
-        'invoice_date' => 'datetime',
+    protected $fillable = [
+        'invoice_number', 'client_id', 'client_name', 'client_address', 'invoice_date', 'due_date', 'items', 'total_amount'
     ];
 
-    public function user()
+    protected $casts = [
+        'items' => 'array',
+        'invoice_date' => 'date',
+        'due_date' => 'date',
+    ];
+
+    public function client()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(Client::class);
     }
 
-    public function items()
+    public function calculateTotalAmount()
     {
-        return $this->hasMany(Item::class);
+        $total = 0;
+
+        foreach ($this->items as $item) {
+            $total += $item['price'] * $item['quantity'];
+        }
+
+        return $total;
     }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($invoice) {
+            $invoice->invoice_number = 'INV-' . strtoupper(uniqid());
+        });
+
+        static::saving(function ($invoice) {
+            $invoice->total_amount = $invoice->calculateTotalAmount();
+        });
+    }
+    
 }

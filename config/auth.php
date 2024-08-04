@@ -40,6 +40,21 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'superAdmin' => [
+            'driver' => 'session',
+            'provider' => 'superAdmins',
+        ],
+
+        // 'user' => [
+        //     'driver' => 'session',
+        //     'provider' => 'users',
+        // ],
+
+        'client' => [
+        'driver' => 'session',
+        'provider' => 'clients',
+    ],
     ],
 
     /*
@@ -65,6 +80,15 @@ return [
             'model' => App\Models\User::class,
         ],
 
+        'superAdmins' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\SuperAdmin::class,
+        ],
+
+        'clients' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Client::class,
+        ],
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',
